@@ -1,4 +1,4 @@
-package main
+package block
 
 import (
 	"crypto/sha256"
@@ -29,10 +29,6 @@ func NewBlock(nonce int, previousHash [32]byte, transactions []*Transaction) *Bl
 	b.previousHash = previousHash
 	b.transactions = transactions
 	return b
-}
-
-func init() {
-	log.SetPrefix("Blockchain: ")
 }
 
 func (b *Block) Print() {
@@ -174,8 +170,27 @@ func (bc *Blockchain) Mining() bool {
 	return true
 }
 
+func (bc *Blockchain) CalculateTotalAmount(blockchainAddress string) (totalAmount float32) {
+	for _, b := range bc.chain {
+		for _, t := range b.transactions {
+			value := t.value
+			if blockchainAddress == t.recipientBlockchainAddress {
+				totalAmount += value
+			}
+			if blockchainAddress == t.senderBlockchainAddress {
+				totalAmount -= value
+			}
+		}
+	}
+	return totalAmount
+}
+
+func init() {
+	log.SetPrefix("Blockchain: ")
+}
+
 func main() {
-	myBlockChainAddress := "my_blockchain_address"
+	myBlockChainAddress := "my_blockchain_address" // In this case, me = miner.
 	bc := NewBlockchain(myBlockChainAddress)
 	bc.Print()
 
@@ -187,4 +202,8 @@ func main() {
 	bc.AddTransaction("X", "Y", 999.9)
 	bc.Mining()
 	bc.Print()
+
+	fmt.Printf("ME %.1f\n", bc.CalculateTotalAmount("my_blockchain_address"))
+	fmt.Printf("C %.1f\n", bc.CalculateTotalAmount("C"))
+	fmt.Printf("D %.1f\n", bc.CalculateTotalAmount("D"))
 }
