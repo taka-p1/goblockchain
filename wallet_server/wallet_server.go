@@ -91,7 +91,7 @@ func (ws *WalletServer) CreateTransaction(w http.ResponseWriter, r *http.Request
 		bt := &block.TransactionRequest{
 			t.SenderBlockchainAddress,
 			t.RecipientBlockchainAddress,
-			t.SenderPrivateKey,
+			t.SenderPublicKey,
 			&value32,
 			&signatureStr,
 		}
