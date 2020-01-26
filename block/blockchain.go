@@ -16,11 +16,10 @@ import (
 )
 
 const (
-	MINING_DIFFICULTY = 3
-	MINING_SENDER     = "THE BLOCKCHAIN" // Adress
-	MINING_REWARD     = 1.0
-	MINING_TIMER_SEC  = 20
-
+	MINING_DIFFICULTY                 = 3
+	MINING_SENDER                     = "THE BLOCKCHAIN" // Adress
+	MINING_REWARD                     = 1.0
+	MINING_TIMER_SEC                  = 20
 	BLOCKCHAIN_PORT_RANGE_START       = 5000
 	BLOCKCHAIN_PORT_RANGE_END         = 5003
 	NEIGHBOR_IP_RANGE_START           = 0
@@ -110,7 +109,7 @@ func (b *Block) MarshalJSON() ([]byte, error) {
 	})
 }
 
-func (b *Block) UnMarshalJSON(data []byte) error {
+func (b *Block) UnmarshalJSON(data []byte) error {
 	var previousHash string
 	v := &struct {
 		Timestamp    *int64          `json:"timestamp"`
@@ -233,11 +232,11 @@ func (t *Transaction) MarshalJSON() ([]byte, error) {
 	})
 }
 
-func (t *Transaction) UnMarshalJSON(data []byte) error {
+func (t *Transaction) UnmarshalJSON(data []byte) error {
 	v := struct {
-		Sender    *string  `json:"sender_blockchain_address"`    // Covert to capital
-		Recipient *string  `json:"recipient_blockchain_address"` // Covert to capital
-		Value     *float32 `json:"value"`                        // Covert to capital
+		Sender    *string  `json:"sender_blockchain_address"`
+		Recipient *string  `json:"recipient_blockchain_address"`
+		Value     *float32 `json:"value"`
 	}{
 		Sender:    &t.senderBlockchainAddress,
 		Recipient: &t.recipientBlockchainAddress,
@@ -350,7 +349,6 @@ func (bc *Blockchain) Mining() bool {
 
 	for _, n := range bc.neighbors {
 		endPoint := fmt.Sprintf("http://%s/consensus", n)
-		fmt.Printf(endPoint)
 		client := &http.Client{}
 		req, _ := http.NewRequest("PUT", endPoint, nil)
 		resp, _ := client.Do(req)
@@ -401,7 +399,6 @@ func (bc *Blockchain) ResolveConflicts() bool {
 
 	for _, n := range bc.neighbors {
 		endPoint := fmt.Sprintf("http://%s/chain", n)
-		fmt.Println(endPoint)
 		resp, _ := http.Get(endPoint)
 		if resp.StatusCode == 200 {
 			var bcResp Blockchain
@@ -415,7 +412,6 @@ func (bc *Blockchain) ResolveConflicts() bool {
 			}
 		}
 	}
-	fmt.Println(longestChain)
 	if longestChain != nil {
 		bc.chain = longestChain
 		log.Printf("Resolve conflicts replaced")

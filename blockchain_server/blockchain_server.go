@@ -186,7 +186,6 @@ func (bcs *Blockchainserver) Amount(w http.ResponseWriter, r *http.Request) {
 func (bcs *Blockchainserver) Consensus(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case http.MethodPut:
-		log.Println("start")
 		bc := bcs.GetBlockchain()
 		isReplaced := bc.ResolveConflicts()
 		w.Header().Add("Content-Type", "application/json")
